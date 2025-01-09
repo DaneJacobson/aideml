@@ -1,4 +1,6 @@
 import logging
+
+from aide.backend import backend_xai
 from . import backend_anthropic, backend_openai, backend_openrouter, backend_gdm
 from .utils import FunctionSpec, OutputType, PromptType, compile_prompt_to_md
 
@@ -6,8 +8,10 @@ logger = logging.getLogger("aide")
 
 
 def determine_provider(model: str) -> str:
-    if model.startswith("gpt-") or model.startswith("o1-") or model.startswith("grok-"):
+    if model.startswith("gpt-") or model.startswith("o1-"):
         return "openai"
+    elif model.startswith("grok-"):
+        return "xai"
     elif model.startswith("claude-"):
         return "anthropic"
     elif model.startswith("gemini-"):
@@ -18,6 +22,7 @@ def determine_provider(model: str) -> str:
 
 
 provider_to_query_func = {
+    "xai": backend_xai.query,
     "openai": backend_openai.query,
     "anthropic": backend_anthropic.query,
     "gdm": backend_gdm.query,

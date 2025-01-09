@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 import time
 
 from aide.backend.utils import (
@@ -29,7 +30,9 @@ OPENAI_TIMEOUT_EXCEPTIONS = (
 @once
 def _setup_openai_client():
     global _client
-    _client = openai.OpenAI(max_retries=0)
+    _client = openai.OpenAI(
+        base_url="https://api.x.ai/v1/", api_key=os.getenv("XAI_API_KEY"), max_retries=0
+    )
 
 
 def query(
